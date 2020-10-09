@@ -23,10 +23,10 @@ namespace Unity.Presentation
         {
             public readonly Color SELECTED_COLOR = new Color(1, 0, 0);
 
-            public readonly GUIStyle BUTTON = new GUIStyle("CommandMid");
-            public readonly GUIStyle BUTTONS_LEFT = new GUIStyle("CommandLeft");
-            public readonly GUIStyle BUTTONS_MID = new GUIStyle("CommandMid");
-            public readonly GUIStyle BUTTONS_RIGHT = new GUIStyle("CommandRight");
+            public readonly GUIStyle BUTTON = new GUIStyle("toolbarbutton");
+            public readonly GUIStyle BUTTONS_LEFT = new GUIStyle("toolbarbutton");
+            public readonly GUIStyle BUTTONS_MID = new GUIStyle("toolbarbutton");
+            public readonly GUIStyle BUTTONS_RIGHT = new GUIStyle("toolbarbutton");
             public readonly GUIStyle NAME = new GUIStyle();
 
             public readonly GUIContent TEXT_NEW = new GUIContent("New", "Create new Presentation");

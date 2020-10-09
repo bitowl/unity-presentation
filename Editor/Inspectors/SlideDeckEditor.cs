@@ -221,7 +221,7 @@ namespace Unity.Presentation.Inspectors
             if (GUILayout.Button("Load This Slide Deck"))
             {
                 Engine.Instance.LoadDeck(instance);
-                EditorWindow.GetWindow<PresentationWindow>();
+                EditorWindow.GetWindow<PresentationWindow>().titleContent = new GUIContent("Presentation");
             }
 
             scroll = DrawInspector(instance, scroll);
@@ -235,7 +235,7 @@ namespace Unity.Presentation.Inspectors
             if (deck)
             {
                 Engine.Instance.LoadDeck(deck);
-                EditorWindow.GetWindow<PresentationWindow>();
+                EditorWindow.GetWindow<PresentationWindow>().titleContent = new GUIContent("Presentation");
                 return true;
             }
 
