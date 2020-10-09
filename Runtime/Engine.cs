@@ -548,7 +548,7 @@ namespace Unity.Presentation
         /// </summary>
         private void subscribeToEvents()
         {
-            EditorApplication.playmodeStateChanged += playmodeChangeHandler;
+            EditorApplication.playModeStateChanged += playmodeChangeHandler;
             EditorApplication.update += updateHandler;
         }
 
@@ -557,7 +557,7 @@ namespace Unity.Presentation
         /// </summary>
         private void unsubscribeFromEvents()
         {
-            EditorApplication.playmodeStateChanged -= playmodeChangeHandler;
+            EditorApplication.playModeStateChanged -= playmodeChangeHandler;
             EditorApplication.update -= updateHandler;
         }
 
@@ -617,7 +617,7 @@ namespace Unity.Presentation
         /// <summary>
         /// Handler for the playmode change event.
         /// </summary>
-        private void playmodeChangeHandler()
+        private void playmodeChangeHandler(PlayModeStateChange playModeStateChange)
         {
             if (EditorApplication.isPaused)
             {

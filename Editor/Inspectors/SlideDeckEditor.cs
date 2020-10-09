@@ -102,7 +102,7 @@ namespace Unity.Presentation.Inspectors
 
                 list.drawElementBackgroundCallback += (Rect rect, int index, bool isActive, bool isFocused) =>
                 {
-                    if (Event.current.type == EventType.repaint)
+                    if (Event.current.type == EventType.Repaint)
                     {
                         if (index < 0) return;
 
@@ -198,7 +198,7 @@ namespace Unity.Presentation.Inspectors
             if (showOptions)
             {
                 EditorGUI.indentLevel++;
-                deck.BackgroundColor = EditorGUILayout.ColorField(styles.TEXT_BG_COLOR, deck.BackgroundColor, true, false, false, new ColorPickerHDRConfig(0, 1, 0, 1), GUILayout.ExpandWidth(true));
+                deck.BackgroundColor = EditorGUILayout.ColorField(styles.TEXT_BG_COLOR, deck.BackgroundColor, true, false, false, GUILayout.ExpandWidth(true));
                 EditorGUI.indentLevel--;
             }
             EditorPrefs.SetBool(propsName, showOptions);

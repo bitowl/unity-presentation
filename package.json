@@ -1,0 +1,12 @@
+{
+  "name": "com.unity.presentation",
+  "displayName": "Unity Presentation",
+  "version": "1.0.0",
+  "unity": "2017.1",
+  "description": "This is an Editor extension for making and presenting slide decks in Unity. It allows you to easily mix static slides with interactive slides and in-editor demonstrations. Each slide is a Unity Scene which can work in or outside of Play Mode.",
+  "author": {
+    "name": "Valentin Simonov",
+    "email": "v@lent.in",
+    "url": "http://v.lent.in"
+  }
+}

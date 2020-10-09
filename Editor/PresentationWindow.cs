@@ -112,7 +112,7 @@ namespace Unity.Presentation
             props = Properties.Instance;
 
             engine.SlideChanged += slideChangedHandler; 
-            EditorApplication.playmodeStateChanged += playmodeChangeHandler;
+            EditorApplication.playModeStateChanged += playmodeChangeHandler;
 
             this.minSize = new Vector2(300, 300);
         }
@@ -293,7 +293,7 @@ namespace Unity.Presentation
             Repaint();
         }
 
-        private void playmodeChangeHandler()
+        private void playmodeChangeHandler(PlayModeStateChange playModeStateChange)
         {
             if (!EditorApplication.isPlaying && !EditorApplication.isPlayingOrWillChangePlaymode)
             {
