@@ -241,6 +241,7 @@ namespace Unity.Presentation
                             var sceneCam = Camera.main;
                             sceneCam.targetTexture = renderTexture;
 
+                            // @bitowl Workaround: Because the Canvas Scaler does not work well with Render Textures, set the scale of the canvas manually to 1
                             GameObject.Find("Canvas").GetComponent<Canvas>().scaleFactor = 1;
 
                             RenderTexture.active = renderTexture;
