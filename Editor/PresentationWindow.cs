@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using System.IO;
 using Unity.Presentation.Inspectors;
 using Unity.Presentation.Utils;
+using UnityEngine.UI;
 
 namespace Unity.Presentation
 {
@@ -239,6 +240,8 @@ namespace Unity.Presentation
 
                             var sceneCam = Camera.main;
                             sceneCam.targetTexture = renderTexture;
+
+                            GameObject.Find("Canvas").GetComponent<Canvas>().scaleFactor = 1;
 
                             RenderTexture.active = renderTexture;
                             sceneCam.Render();
