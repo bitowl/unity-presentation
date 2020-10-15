@@ -40,6 +40,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using System;
 using System.IO;
+using System.Linq;
 using Unity.Presentation.Behaviors;
 using Unity.Presentation.Utils;
 
@@ -568,7 +569,7 @@ namespace Unity.Presentation
         /// </summary>
         private void createSceneHelper()
         {
-            var go = new GameObject();
+            var go = new GameObject("Presentation Helper");
             go.hideFlags = HideFlags.DontSaveInBuild | HideFlags.DontSaveInEditor;// | HideFlags.HideInHierarchy;
 
             helper = go.AddComponent<PresentationHelper>();
@@ -577,6 +578,8 @@ namespace Unity.Presentation
             helper.PreviousSlide = props.PreviousSlide;
             helper.Previous += previousSlideHandler;
             helper.Next += nextSlideHandler;
+            helper.slideNames = deck.Slides.Select(slide => slide.Scene.name).ToArray();
+            helper.GoToSlide += goToSlideHandler;
         }
 
         /// <summary>
@@ -723,6 +726,11 @@ namespace Unity.Presentation
                     createSceneHelper();
                 }
             }
+        }
+        
+        private void goToSlideHandler(object sender, int slideId)
+        {
+            gotoSlide(slideId);
         }
 
 #endregion

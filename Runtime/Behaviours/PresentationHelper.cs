@@ -32,6 +32,8 @@ namespace Unity.Presentation.Behaviors
         /// </summary>
         public event EventHandler Frame;
 
+        public event EventHandler<int> GoToSlide; 
+
 #endregion
 
 #region Public properties/fields.
@@ -48,6 +50,8 @@ namespace Unity.Presentation.Behaviors
         [HideInInspector]
         public KeyCode NextSlide = KeyCode.RightArrow;
 
+        public string[] slideNames;
+
 #endregion
 
 #region Private variables
@@ -56,11 +60,27 @@ namespace Unity.Presentation.Behaviors
         private GameView gameView;
 #endif
 
+        private bool showSlidesMenu;
+        public GUIStyle buttonStyle;
 #endregion
 
 #region Unity callbacks
 
-        private void OnEnable()
+    private void Start()
+    {
+        buttonStyle = new GUIStyle
+        {
+            fontSize = 40,
+            hover = {textColor = new Color(0.2196078f, 0.4039216f, 0.8392157f)},
+            padding = {left = 16, right = 16, top = 8, bottom = 8},
+            border = {bottom = 1},
+            normal = {background = (Texture2D) Resources.Load("gray-square")}
+        };
+        buttonStyle.hover.background = buttonStyle.normal.background;
+
+    }
+
+private void OnEnable()
         {
 #if UNITY_EDITOR
             gameView = GameView.Instance;
@@ -80,6 +100,19 @@ namespace Unity.Presentation.Behaviors
 
         private void OnGUI()
         {
+            
+            if (showSlidesMenu && GoToSlide != null)
+            {
+                for (int i = 0; i < slideNames.Length; i++)
+                {
+                    if (GUILayout.Button(slideNames[i], buttonStyle))
+                    {
+                        showSlidesMenu = false;
+                        GoToSlide(this, i);
+                    }
+                }
+            }
+            
             if (Event.current.type == EventType.KeyUp && !keyHandled)
             {
                 keyHandled = true;
@@ -123,7 +156,12 @@ namespace Unity.Presentation.Behaviors
                     Application.Quit();
                 }
 #endif
+                else if (Event.current.keyCode == KeyCode.Q)
+                {
+                    showSlidesMenu = !showSlidesMenu;
+                }
             }
+
         }
 
         private void OnDestroy()
