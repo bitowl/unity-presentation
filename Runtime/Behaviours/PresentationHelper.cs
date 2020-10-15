@@ -62,6 +62,8 @@ namespace Unity.Presentation.Behaviors
 
         private bool showSlidesMenu;
         public GUIStyle buttonStyle;
+        private bool showCursorCircle;
+        private Texture2D cursorTexture;
 #endregion
 
 #region Unity callbacks
@@ -77,6 +79,7 @@ namespace Unity.Presentation.Behaviors
             normal = {background = (Texture2D) Resources.Load("gray-square")}
         };
         buttonStyle.hover.background = buttonStyle.normal.background;
+        cursorTexture = Resources.Load<Texture2D>("cursor");
 
     }
 
@@ -112,6 +115,13 @@ private void OnEnable()
                     }
                 }
             }
+
+            if (showCursorCircle)
+            {
+                GUI.DrawTexture(new Rect(Input.mousePosition.x-32, Screen.height- Input.mousePosition.y-32,64,64),cursorTexture);
+            }
+            
+            // Key presses
             
             if (Event.current.type == EventType.KeyUp && !keyHandled)
             {
@@ -159,6 +169,10 @@ private void OnEnable()
                 else if (Event.current.keyCode == KeyCode.Q)
                 {
                     showSlidesMenu = !showSlidesMenu;
+                }
+                else if (Event.current.keyCode == KeyCode.C)
+                {
+                    showCursorCircle = !showCursorCircle;
                 }
             }
 
