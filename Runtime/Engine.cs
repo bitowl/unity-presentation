@@ -578,7 +578,7 @@ namespace Unity.Presentation
             helper.PreviousSlide = props.PreviousSlide;
             helper.Previous += previousSlideHandler;
             helper.Next += nextSlideHandler;
-            helper.slideNames = deck.Slides.Select(slide => slide.Scene.name).ToArray();
+            helper.slideNames = deck.Slides.Select(slide => slide.ScenePath).ToArray();
             helper.GoToSlide += goToSlideHandler;
         }
 

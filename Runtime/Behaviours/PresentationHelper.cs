@@ -72,7 +72,7 @@ namespace Unity.Presentation.Behaviors
     {
         buttonStyle = new GUIStyle
         {
-            fontSize = 40,
+            fontSize = 30,
             hover = {textColor = new Color(0.2196078f, 0.4039216f, 0.8392157f)},
             padding = {left = 16, right = 16, top = 8, bottom = 8},
             border = {bottom = 1},

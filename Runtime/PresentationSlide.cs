@@ -40,7 +40,7 @@ namespace Unity.Presentation
 
 #if UNITY_EDITOR
         /// <summary>
-        /// Prepares the slide for standalone build, caching properties which are not obrainable in build.
+        /// Prepares the slide for standalone build, caching properties which are not obtainable in build.
         /// </summary>
         public void PrepareForBuild()
         {
