@@ -32,10 +32,13 @@ namespace Unity.Presentation.Utils
             if (EditorUserBuildSettings.connectProfiler) options |= BuildOptions.ConnectWithProfiler;
             if (EditorUserBuildSettings.allowDebugging) options |= BuildOptions.AllowDebugging;
 
+
+            BuildTarget buildTarget = EditorUserBuildSettings.activeBuildTarget;
+            //BuildTarget buildTarget = BuildTarget.WebGL;
             try
             {
                 string name;
-                switch (EditorUserBuildSettings.activeBuildTarget)
+                switch (buildTarget)
                 {
                     case BuildTarget.StandaloneWindows:
                     case BuildTarget.StandaloneWindows64:
@@ -45,7 +48,7 @@ namespace Unity.Presentation.Utils
                         name = "Presentation";
                         break;
                 }
-                BuildPipeline.BuildPlayer(scenes.ToArray(), Path.Combine(path, name), EditorUserBuildSettings.activeBuildTarget, options);
+                BuildPipeline.BuildPlayer(scenes.ToArray(), Path.Combine(path, name), buildTarget, options);
             }
             catch (Exception e)
             {
