@@ -251,7 +251,8 @@ namespace Unity.Presentation
                             exportTexture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
 
                             var slidePath =
-                                string.Format("{0}/{1} - {2}.png", exportFolder, i + 1,
+                                // string.Format("{0}/{1} - {2}.png", exportFolder, i + 1,
+                                string.Format("{0}/{1}.png", exportFolder,
                                     Path.GetFileNameWithoutExtension(slide.ScenePath));
 
                             File.WriteAllBytes(slidePath,
