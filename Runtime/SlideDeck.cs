@@ -15,7 +15,7 @@ namespace Unity.Presentation
     [CreateAssetMenu(fileName = "Slide Deck", menuName = "Slide Deck")]
     public class SlideDeck : ScriptableObject
     {
-#region Consts
+        #region Consts
 
         /// <summary>
         /// Play Mode filter for GetSlides.
@@ -61,9 +61,9 @@ namespace Unity.Presentation
             All = Visible | Hidden
         }
 
-#endregion
+        #endregion
 
-#region Public fields
+        #region Public fields
 
         /// <summary>
         /// The list of slides.
@@ -80,6 +80,39 @@ namespace Unity.Presentation
         {
             get { return backgroundColor; }
             set { backgroundColor = value; }
+        }
+
+        /// <summary>
+        /// Title for the course
+        /// </summary>
+        public string CourseTitle
+        {
+            get { return courseTitle; }
+            set { courseTitle = value; }
+        }
+
+        /// <summary>
+        /// Title for the session
+        /// </summary>
+        public string SessionTitle
+        {
+            get { return sessionTitle; }
+            set { sessionTitle = value; }
+        }
+
+        /// <summary>
+        /// Date of the session
+        /// </summary>
+        public string SessionDate
+        {
+            get { return sessionDate; }
+            set { sessionDate = value; }
+        }
+
+        public bool IsWebApp
+        {
+            get { return isWebApp; }
+            set { isWebApp = value; }
         }
 
         /// <summary>
@@ -123,20 +156,32 @@ namespace Unity.Presentation
             }
         }
 
-#endregion
+        #endregion
 
-#region Private variables
+        #region Private variables
 
         [SerializeField]
         [FormerlySerializedAs("Slides")]
         private List<PresentationSlide> slides = new List<PresentationSlide>();
 
         [SerializeField]
-        private Color backgroundColor = Color.black;
+        private Color backgroundColor = Color.white;
 
-#endregion
+        [SerializeField]
+        private string courseTitle;
 
-#region Public methods
+        [SerializeField]
+        private string sessionTitle;
+
+        [SerializeField]
+        private string sessionDate;
+
+        [SerializeField]
+        private bool isWebApp;
+
+        #endregion
+
+        #region Public methods
 
 #if UNITY_EDITOR
         /// <summary>
@@ -211,7 +256,7 @@ namespace Unity.Presentation
             return list;
         }
 
-#endregion
+        #endregion
 
     }
 }

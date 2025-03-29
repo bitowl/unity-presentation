@@ -15,7 +15,7 @@ namespace Unity.Presentation.Inspectors
     public class SlideDeckEditor : Editor
     {
 
-#region Styles
+        #region Styles
 
         private class Styles
         {
@@ -56,9 +56,9 @@ namespace Unity.Presentation.Inspectors
             }
         }
 
-#endregion
+        #endregion
 
-#region Private variables
+        #region Private variables
 
         private static Styles styles;
 
@@ -67,9 +67,9 @@ namespace Unity.Presentation.Inspectors
         private SlideDeck instance;
         private float scroll;
 
-#endregion
+        #endregion
 
-#region Static methods
+        #region Static methods
 
         /// <summary>
         /// Draws inspector for a Slide Deck.
@@ -93,7 +93,7 @@ namespace Unity.Presentation.Inspectors
 
                 list.onChangedCallback += (l) =>
                 {
-//					deck.Save();
+                    //					deck.Save();
                 };
 
                 list.drawHeaderCallback += (Rect rect) => GUI.Label(rect, deck.IsSavedOnDisk ? deck.Name + ".asset" : "<not saved>");
@@ -198,7 +198,18 @@ namespace Unity.Presentation.Inspectors
             if (showOptions)
             {
                 EditorGUI.indentLevel++;
+                EditorGUI.BeginChangeCheck();
                 deck.BackgroundColor = EditorGUILayout.ColorField(styles.TEXT_BG_COLOR, deck.BackgroundColor, true, false, false, GUILayout.ExpandWidth(true));
+                deck.CourseTitle = EditorGUILayout.TextField("Course Title", deck.CourseTitle);
+                deck.SessionTitle = EditorGUILayout.TextField("Session Title", deck.SessionTitle);
+                deck.SessionDate = EditorGUILayout.TextField("Session Date", deck.SessionDate);
+                deck.IsWebApp = EditorGUILayout.Toggle("Is Web App", deck.IsWebApp);
+
+                if (EditorGUI.EndChangeCheck())
+                {
+                    deck.Save();
+                }
+
                 EditorGUI.indentLevel--;
             }
             EditorPrefs.SetBool(propsName, showOptions);
@@ -207,9 +218,9 @@ namespace Unity.Presentation.Inspectors
             return scroll;
         }
 
-#endregion
+        #endregion
 
-#region Unity callbacks
+        #region Unity callbacks
 
         private void OnEnable()
         {
@@ -242,6 +253,6 @@ namespace Unity.Presentation.Inspectors
             return false;
         }
 
-#endregion
+        #endregion
     }
 }
