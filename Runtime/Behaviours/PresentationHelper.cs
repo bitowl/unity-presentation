@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
-using Unity.Presentation.Utils;
 using Unity.Presentation.EditorOnly;
 #endif
 
@@ -15,7 +16,7 @@ namespace Unity.Presentation.Behaviors
     [ExecuteInEditMode]
     public class PresentationHelper : MonoBehaviour
     {
-#region Events
+        #region Events
 
         /// <summary>
         /// Previous slide event.
@@ -32,11 +33,11 @@ namespace Unity.Presentation.Behaviors
         /// </summary>
         public event EventHandler Frame;
 
-        public event EventHandler<int> GoToSlide; 
+        public event EventHandler<int> GoToSlide;
 
-#endregion
+        #endregion
 
-#region Public properties/fields.
+        #region Public properties/fields.
 
         /// <summary>
         /// Previous slide key binding.
@@ -51,10 +52,11 @@ namespace Unity.Presentation.Behaviors
         public KeyCode NextSlide = KeyCode.RightArrow;
 
         public string[] slideNames;
+        public static string BreakScene => "Assets/Scenes/Common/Break.unity";
 
-#endregion
+        #endregion
 
-#region Private variables
+        #region Private variables
 
 #if UNITY_EDITOR
         private GameView gameView;
@@ -64,26 +66,29 @@ namespace Unity.Presentation.Behaviors
         public GUIStyle buttonStyle;
         private bool showCursorCircle;
         private Texture2D cursorTexture;
-#endregion
+        private bool showBreakMenu = false;
+        private bool isShowingBreak = false;
+        private String sceneBeforeBreak;
+        #endregion
 
-#region Unity callbacks
+        #region Unity callbacks
 
-    private void Start()
-    {
-        buttonStyle = new GUIStyle
+        private void Start()
         {
-            fontSize = 20,
-            hover = {textColor = new Color(0.2196078f, 0.4039216f, 0.8392157f)},
-            padding = {left = 16, right = 16, top = 8, bottom = 8},
-            border = {bottom = 1},
-            normal = {background = (Texture2D) Resources.Load("gray-square")}
-        };
-        buttonStyle.hover.background = buttonStyle.normal.background;
-        cursorTexture = Resources.Load<Texture2D>("cursor");
+            buttonStyle = new GUIStyle
+            {
+                fontSize = 20,
+                hover = { textColor = new Color(0.2196078f, 0.4039216f, 0.8392157f) },
+                padding = { left = 16, right = 16, top = 8, bottom = 8 },
+                border = { bottom = 1 },
+                normal = { background = (Texture2D)Resources.Load("gray-square") }
+            };
+            buttonStyle.hover.background = buttonStyle.normal.background;
+            cursorTexture = Resources.Load<Texture2D>("cursor");
 
-    }
+        }
 
-private void OnEnable()
+        private void OnEnable()
         {
 #if UNITY_EDITOR
             gameView = GameView.Instance;
@@ -96,19 +101,19 @@ private void OnEnable()
 
             keyHandled = false;
         }
-			
+
         // Getting double EventType.KeyUp events in Standalone Player.
         // This hack is here to make sure that we handle it only once.
         private bool keyHandled = false;
 
         private void OnGUI()
         {
-            
+
             if (showSlidesMenu && GoToSlide != null)
             {
                 for (int i = 0; i < slideNames.Length; i++)
                 {
-                    if (GUILayout.Button(slideNames[i], buttonStyle))
+                    if (GUILayout.Button(i + "  " + slideNames[i], buttonStyle))
                     {
                         showSlidesMenu = false;
                         GoToSlide(this, i);
@@ -118,20 +123,52 @@ private void OnEnable()
 
             if (showCursorCircle)
             {
-                GUI.DrawTexture(new Rect(Input.mousePosition.x-32, Screen.height- Input.mousePosition.y-32,64,64),cursorTexture);
+                GUI.DrawTexture(new Rect(Input.mousePosition.x - 32, Screen.height - Input.mousePosition.y - 32, 64, 64), cursorTexture);
             }
-            
+
+            if (showBreakMenu)
+            {
+                if (isShowingBreak)
+                {
+                    if (GUILayout.Button("Resume", buttonStyle))
+                    {
+                        showBreakMenu = false;
+                        SceneManager.LoadScene(sceneBeforeBreak);
+                    }
+                }
+                else
+                {
+                    if (GUILayout.Button("Break", buttonStyle))
+                    {
+                        sceneBeforeBreak = SceneManager.GetActiveScene().path;
+                        SceneManager.LoadScene(BreakScene);
+                        showBreakMenu = false;
+                        isShowingBreak = true;
+                    }
+                }
+                if (GUILayout.Button("Quit", buttonStyle))
+                {
+#if UNITY_EDITOR
+                    EditorApplication.isPlaying = false;
+#else
+                    Application.Quit();
+#endif
+                }
+
+
+            }
+
             // Key presses
-            
+
             if (Event.current.type == EventType.KeyUp && !keyHandled)
             {
                 keyHandled = true;
-                if (Event.current.keyCode == PreviousSlide && Previous != null) 
+                if (Event.current.keyCode == PreviousSlide && Previous != null)
                 {
                     Event.current.Use();
                     Previous(this, EventArgs.Empty);
                 }
-                else if (Event.current.keyCode == NextSlide && Next != null) 
+                else if (Event.current.keyCode == NextSlide && Next != null)
                 {
                     Event.current.Use();
                     Next(this, EventArgs.Empty);
@@ -159,13 +196,11 @@ private void OnEnable()
                             gameView.SetFullscreen();
                     }
 #endif
-                } 
-#if !UNITY_EDITOR
+                }
                 else if (Event.current.keyCode == KeyCode.Escape)
                 {
-                    Application.Quit();
+                    showBreakMenu = !showBreakMenu;
                 }
-#endif
                 else if (Event.current.keyCode == KeyCode.Q)
                 {
                     showSlidesMenu = !showSlidesMenu;
@@ -175,7 +210,6 @@ private void OnEnable()
                     showCursorCircle = !showCursorCircle;
                 }
             }
-
         }
 
         private void OnDestroy()
@@ -185,6 +219,6 @@ private void OnEnable()
             Frame = null;
         }
 
-#endregion
+        #endregion
     }
 }
