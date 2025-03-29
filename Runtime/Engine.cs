@@ -59,7 +59,7 @@ namespace Unity.Presentation
     public class Engine : ScriptableObject
     {
 
-#region Consts
+        #region Consts
 
         /// <summary>
         /// Public version.
@@ -113,9 +113,9 @@ namespace Unity.Presentation
             LoadingScene
         }
 
-#endregion
+        #endregion
 
-#region Static properties
+        #region Static properties
 
         /// <summary>
         /// The instance of the singleton.
@@ -138,18 +138,18 @@ namespace Unity.Presentation
             }
         }
 
-#endregion
+        #endregion
 
-#region Events
+        #region Events
 
         /// <summary>
         /// Slide change event.
         /// </summary>
         public event SlideEventHandler SlideChanged;
 
-#endregion
+        #endregion
 
-#region Public properties
+        #region Public properties
 
         /// <summary>
         /// Returns current slide deck.
@@ -195,9 +195,9 @@ namespace Unity.Presentation
             get { return SlideDeck.Slides[currentSlideId]; }
         }
 
-#endregion
+        #endregion
 
-#region Private variables
+        #region Private variables
 
         static private Engine instance;
 
@@ -221,9 +221,9 @@ namespace Unity.Presentation
         private SceneSetup[] defaultSceneSetup;
 #endif
 
-#endregion
+        #endregion
 
-#region Public API
+        #region Public API
 
         /// <summary>
         /// Creates a new Slide Deck.
@@ -245,7 +245,7 @@ namespace Unity.Presentation
             if (deck == null)
             {
 #if UNITY_EDITOR
-                var path = EditorUtility.OpenFilePanel("Open Slide Deck", Application.dataPath, "asset");
+                var path = EditorUtility.OpenFilePanel("Open Slide Deck", Application.dataPath + "/ScriptableObjects", "asset");
                 if (string.IsNullOrEmpty(path)) return;
                 path = Path.Combine("Assets", path.Substring(Application.dataPath.Length + 1));
                 var newDeck = AssetDatabase.LoadAssetAtPath<SlideDeck>(path);
@@ -342,9 +342,9 @@ namespace Unity.Presentation
             gotoSlide(i);
         }
 
-#endregion
+        #endregion
 
-#region Unity methods
+        #region Unity methods
 
         private void OnEnable()
         {
@@ -366,9 +366,9 @@ namespace Unity.Presentation
 #endif
         }
 
-#endregion
+        #endregion
 
-#region Private functions
+        #region Private functions
 
         /// <summary>
         /// Initiates Play Mode change with the specific reason
@@ -436,9 +436,9 @@ namespace Unity.Presentation
             if (newSlide.StartInPlayMode)
             {
                 // Play Mode slide.
-                if (wasInPlayMode) 
-					// We are already in Play Mode, just change the slide.
-					changeSlide();
+                if (wasInPlayMode)
+                    // We are already in Play Mode, just change the slide.
+                    changeSlide();
                 else
                 {
                     // We are out of Play Mode and need to go into Play Mode.
@@ -457,8 +457,8 @@ namespace Unity.Presentation
                     changePlayMode(false, PlayModeChange.SlideChangedPlayMode);
                 }
                 else
-					// If we are out of Play Mode, we can just go to the next slide.
-					changeSlide();
+                    // If we are out of Play Mode, we can just go to the next slide.
+                    changeSlide();
             }
 #else
 			// In Standalone mode we are always in Play Mode.
@@ -600,9 +600,9 @@ namespace Unity.Presentation
             helper = null;
         }
 
-#endregion
+        #endregion
 
-#region Event handlers
+        #region Event handlers
 
 #if UNITY_EDITOR
 
@@ -636,23 +636,23 @@ namespace Unity.Presentation
                 switch (playModeChangeReason)
                 {
                     case PlayModeChange.ExitBeforeStart:
-					// We manually exited Play Mode to start current presentation.
-					// Continue startup.
+                        // We manually exited Play Mode to start current presentation.
+                        // Continue startup.
                         startPresentation(startFrom);
                         break;
                     case PlayModeChange.SlideChangedPlayMode:
-					// Current slide initiated going out of Play Mode.
-					// Continue showing the current slide.
+                        // Current slide initiated going out of Play Mode.
+                        // Continue showing the current slide.
                         changeSlide();
                         break;
                     case PlayModeChange.ExitBeforeStop:
-					// We are stopping the presentation and need to leave Play Mode.
+                        // We are stopping the presentation and need to leave Play Mode.
                         restoreEditorState();
                         unsubscribeFromEvents();
                         break;
                     case PlayModeChange.User:
-					// User clicked Play button to exit Play Mode.
-					// We need to open the current running scene because the one open before going to Play Mode will be reopened otherwise.
+                        // User clicked Play button to exit Play Mode.
+                        // We need to open the current running scene because the one open before going to Play Mode will be reopened otherwise.
                         var newScene = deck.Slides[currentSlideId].ScenePath;
                         if (string.IsNullOrEmpty(newScene)) restoreEditorState();
                         else EditorSceneManager.OpenScene(newScene, OpenSceneMode.Single);
@@ -727,13 +727,13 @@ namespace Unity.Presentation
                 }
             }
         }
-        
+
         private void goToSlideHandler(object sender, int slideId)
         {
             gotoSlide(slideId);
         }
 
-#endregion
+        #endregion
 
 #if UNITY_EDITOR
         private class Ticker

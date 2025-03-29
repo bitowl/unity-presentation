@@ -6,6 +6,7 @@ using System.IO;
 using Unity.Presentation.Inspectors;
 using Unity.Presentation.Utils;
 using UnityEngine.UI;
+using System;
 
 namespace Unity.Presentation
 {
@@ -15,7 +16,7 @@ namespace Unity.Presentation
     /// </summary>
     public class PresentationWindow : EditorWindow
     {
-#region Styles
+        #region Styles
 
         /// <summary>
         /// Window styles.
@@ -34,7 +35,7 @@ namespace Unity.Presentation
             public readonly GUIContent TEXT_LOAD = new GUIContent("Load", "Load Presentation from disk");
             public readonly GUIContent TEXT_SAVE = new GUIContent("Save", "Save Presentation to disk");
             public readonly GUIContent TEXT_BUILD = new GUIContent("Build", "Build Standalone Presentation for selected platform");
-            public readonly GUIContent TEXT_EXPORT = new GUIContent("Exprt", "Export all slides to png image files");
+            public readonly GUIContent TEXT_EXPORT = new GUIContent("Export", "Export all slides to png image files");
             public readonly GUIContent TEXT_PREV = new GUIContent("<<", "Go to the previous slide");
             public readonly GUIContent TEXT_FROM_BEGINNING = new GUIContent("> B", "Start Presentation from the first slide");
             public readonly GUIContent TEXT_STOP = new GUIContent("Stop", "Stop Presentation");
@@ -59,9 +60,9 @@ namespace Unity.Presentation
             }
         }
 
-#endregion
+        #endregion
 
-#region Static methods
+        #region Static methods
 
         /// <summary>
         /// Shows the window.
@@ -74,9 +75,9 @@ namespace Unity.Presentation
             wnd.Show();
         }
 
-#endregion
+        #endregion
 
-#region Private variables
+        #region Private variables
 
         /// <summary>
         /// Window styles.
@@ -103,16 +104,20 @@ namespace Unity.Presentation
         /// </summary>
         private bool focused;
 
-#endregion
+        #endregion
 
-#region Unity callbacks
+        public static Action<SlideDeck> onStartExport;
+        public static Action<int> onExportSlide;
+        public static Action onFinishExport;
+
+        #region Unity callbacks
 
         private void OnEnable()
         {
             engine = Engine.Instance;
             props = Properties.Instance;
 
-            engine.SlideChanged += slideChangedHandler; 
+            engine.SlideChanged += slideChangedHandler;
             EditorApplication.playModeStateChanged += playmodeChangeHandler;
 
             this.minSize = new Vector2(300, 300);
@@ -199,6 +204,7 @@ namespace Unity.Presentation
                     }
                     else
                     {
+                        EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
                         engine.StartPresentation();
                     }
                 }
@@ -227,11 +233,16 @@ namespace Unity.Presentation
                     var activeScene = SceneManager.GetActiveScene().path;
 
                     string exportFolder =
-                        EditorUtility.OpenFolderPanel("Choose folder for export", Application.dataPath, "Exports");
+                        Application.dataPath.Replace("/Assets", "/Slides");
+                    //EditorUtility.OpenFolderPanel("Choose folder for export", Application.dataPath.Replace("/Assets", ""), "Slides");
 
                     if (!string.IsNullOrEmpty(exportFolder))
                     {
                         RenderTexture renderTexture = RenderTexture.GetTemporary(1920, 1080, 32, RenderTextureFormat.ARGB32);
+                        // Use anti aliasing on the render texture to get smooth svgs.
+                        renderTexture.antiAliasing = 4;
+
+                        onStartExport?.Invoke(deck);
 
                         for (var i = 0; i < deck.Slides.Count; i++)
                         {
@@ -242,7 +253,7 @@ namespace Unity.Presentation
                             sceneCam.targetTexture = renderTexture;
 
                             // @bitowl Workaround: Because the Canvas Scaler does not work well with Render Textures, set the scale of the canvas manually to 1
-                            GameObject.Find("Canvas").GetComponent<Canvas>().scaleFactor = 1;
+                            //GameObject.Find("Canvas").GetComponent<Canvas>().scaleFactor = 1;
 
                             RenderTexture.active = renderTexture;
                             sceneCam.Render();
@@ -250,30 +261,44 @@ namespace Unity.Presentation
                             var exportTexture = new Texture2D(renderTexture.width, renderTexture.height);
                             exportTexture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0);
 
-                            var slidePath =
-                                // string.Format("{0}/{1} - {2}.png", exportFolder, i + 1,
-                                string.Format("{0}/{1}.png", exportFolder,
-                                    Path.GetFileNameWithoutExtension(slide.ScenePath));
+                            bool asPNG = false;
 
-                            File.WriteAllBytes(slidePath,
-                                exportTexture.EncodeToPNG());
+                            if (asPNG)
+                            {
+                                var slidePath =
+                                        // string.Format("{0}/{1} - {2}.png", exportFolder, i + 1,
+                                        /*string.Format("{0}/{1}.png", exportFolder,
+                                            Path.GetFileNameWithoutExtension(slide.ScenePath));*/
+                                        string.Format("{0}/Slide_{1}.png", exportFolder, i);
+
+                                File.WriteAllBytes(slidePath,
+                                    exportTexture.EncodeToPNG());
+                            }
+                            else
+                            {
+                                var slidePath = string.Format("{0}/Slide_{1}.jpg", exportFolder, i);
+                                File.WriteAllBytes(slidePath, exportTexture.EncodeToJPG());
+                            }
+
+                            onExportSlide?.Invoke(i);
 
                             RenderTexture.active = null;
-                            Object.DestroyImmediate(exportTexture);
+                            UnityEngine.Object.DestroyImmediate(exportTexture);
                         }
 
+                        onFinishExport?.Invoke();
                         RenderTexture.ReleaseTemporary(renderTexture);
 
-                        if(!string.IsNullOrEmpty(activeScene))
+                        if (!string.IsNullOrEmpty(activeScene))
                             EditorSceneManager.OpenScene(activeScene);
                     }
                 }
             }
         }
 
-#endregion
+        #endregion
 
-#region Private functions
+        #region Private functions
 
         private bool shouldSelect(SlideDeck deck, int index)
         {
@@ -282,15 +307,19 @@ namespace Unity.Presentation
             return engine.CurrentSlideId == index;
         }
 
-#endregion
+        #endregion
 
-#region Event handlers
+        #region Event handlers
 
         private void itemPlayHandler(SlideDeck deck, int index)
         {
             if (engine.SlideDeck != deck) return;
             if (engine.IsPresenting) engine.GotoSlide(index);
-            else engine.StartPresentation(index);
+            else
+            {
+                EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo();
+                engine.StartPresentation(index);
+            }
         }
 
         private void slideChangedHandler(object sender, SlideEventArgs e)
@@ -304,10 +333,10 @@ namespace Unity.Presentation
             {
                 // Went out of Play Mode. If we had focus, need to refocus the window.
                 if (focused) Focus();
-            } 
+            }
         }
 
-#endregion
+        #endregion
 
     }
 }

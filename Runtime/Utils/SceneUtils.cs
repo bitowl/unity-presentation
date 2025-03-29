@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
-using Unity.Presentation;
 using System.IO;
-using Unity.Presentation.Utils;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -58,7 +56,7 @@ namespace Unity.Presentation.Utils
                 if (hash.Contains(scene.path)) continue;
                 nonDeckScenes.Add(scene);
             }
-
+           
             return nonDeckScenes;
         }
 

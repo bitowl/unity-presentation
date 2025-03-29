@@ -15,7 +15,7 @@ namespace Unity.Presentation.EditorOnly
     public class GameView : ScriptableObject
     {
 
-#region Consts
+        #region Consts
 
         /// <summary>
         /// Mac top menu height.
@@ -32,9 +32,9 @@ namespace Unity.Presentation.EditorOnly
             Fullscreen
         }
 
-#endregion
+        #endregion
 
-#region Public properties
+        #region Public properties
 
         /// <summary>
         /// GameView singleton instance.
@@ -79,9 +79,9 @@ namespace Unity.Presentation.EditorOnly
             }
         }
 
-#endregion
+        #endregion
 
-#region Private variables
+        #region Private variables
 
         private static GameView instance;
 
@@ -97,9 +97,9 @@ namespace Unity.Presentation.EditorOnly
 
         private EditorWindow fullscreenGameView;
 
-#endregion
+        #endregion
 
-#region Public methods
+        #region Public methods
 
         /// <summary>
         /// Sets GameView into normal state.
@@ -109,7 +109,7 @@ namespace Unity.Presentation.EditorOnly
             if (state == State.Maximized)
             {
                 var gameView = getGameView();
-                if (gameView != null && isMaximized(gameView)) WindowLayout_Unmaximize.Invoke(null, new object[]{ gameView });
+                if (gameView != null && isMaximized(gameView)) WindowLayout_Unmaximize.Invoke(null, new object[] { gameView });
             }
             else if (state == State.Fullscreen)
             {
@@ -127,7 +127,7 @@ namespace Unity.Presentation.EditorOnly
         {
             if (state != State.Normal) return;
 
-            WindowLayout_Maximize.Invoke(null, new object[]{ getGameView() });
+            WindowLayout_Maximize.Invoke(null, new object[] { getGameView() });
             state = State.Maximized;
         }
 
@@ -136,6 +136,8 @@ namespace Unity.Presentation.EditorOnly
         /// </summary>
         public void SetFullscreen()
         {
+            // TODO use FullscreenGameView (Ctrl+Shift+Alt+2) instead
+            /*
             if (state != State.Normal) return;
 
             if (fullscreenGameView == null)
@@ -153,11 +155,12 @@ namespace Unity.Presentation.EditorOnly
             fullscreenGameView.position = new Rect(new Vector2(0, -MENU_HEIGHT), size);
 
             state = State.Fullscreen;
+            */
         }
 
-#endregion
+        #endregion
 
-#region Unity methods
+        #region Unity methods
 
         private void OnEnable()
         {
@@ -167,9 +170,9 @@ namespace Unity.Presentation.EditorOnly
             if (gameView != null && isMaximized(gameView)) state = State.Maximized;
         }
 
-#endregion
+        #endregion
 
-#region Private functions
+        #region Private functions
 
         private EditorWindow createEditorWindow()
         {
@@ -180,12 +183,12 @@ namespace Unity.Presentation.EditorOnly
 
         private EditorWindow getGameView()
         {
-            return WindowLayout_FindEditorWindowOfType.Invoke(null, new object[]{ GameViewType }) as EditorWindow;
+            return WindowLayout_FindEditorWindowOfType.Invoke(null, new object[] { GameViewType }) as EditorWindow;
         }
 
         private bool isMaximized(EditorWindow window)
         {
-            return (bool)WindowLayout_IsMaximized.Invoke(null, new object[]{ window });
+            return (bool)WindowLayout_IsMaximized.Invoke(null, new object[] { window });
         }
 
         private void initWindowTypes()
@@ -200,7 +203,7 @@ namespace Unity.Presentation.EditorOnly
             WindowLayout_Unmaximize = WindowLayout.GetMethod("Unmaximize", BindingFlags.Static | BindingFlags.Public);
         }
 
-#endregion
+        #endregion
 
     }
 }
