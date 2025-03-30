@@ -149,7 +149,7 @@ namespace Unity.Presentation.Behaviors
                 if (GUILayout.Button("Quit", buttonStyle))
                 {
 #if UNITY_EDITOR
-                    EditorApplication.isPlaying = false;
+                    Engine.Instance.StopPresentation();
 #else
                     Application.Quit();
 #endif
