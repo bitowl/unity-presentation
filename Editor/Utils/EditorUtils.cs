@@ -64,7 +64,7 @@ namespace Unity.Presentation.Utils
         {
             var sceneSetup = EditorSceneManager.GetSceneManagerSetup();
             var scene = EditorSceneManager.OpenScene(SceneUtils.LoaderScenePath, OpenSceneMode.Single);
-            var loader = GameObject.FindObjectOfType<Loader>() as Loader;
+            var loader = GameObject.FindAnyObjectByType<Loader>() as Loader;
             if (loader == null)
             {
                 Debug.LogError("Failed to update Loader scene. Can't find Loader script");
