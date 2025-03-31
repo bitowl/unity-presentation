@@ -107,7 +107,7 @@ namespace Unity.Presentation
         #endregion
 
         public static Action<SlideDeck> onStartExport;
-        public static Action<int> onExportSlide;
+        public static Action<int, bool> onExportSlide;
         public static Action onFinishExport;
 
         #region Unity callbacks
@@ -280,7 +280,7 @@ namespace Unity.Presentation
                                 File.WriteAllBytes(slidePath, exportTexture.EncodeToJPG());
                             }
 
-                            onExportSlide?.Invoke(i);
+                            onExportSlide?.Invoke(i, slide.Visible);
 
                             RenderTexture.active = null;
                             UnityEngine.Object.DestroyImmediate(exportTexture);
