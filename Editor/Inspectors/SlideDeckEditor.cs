@@ -202,6 +202,7 @@ namespace Unity.Presentation.Inspectors
                 deck.BackgroundColor = EditorGUILayout.ColorField(styles.TEXT_BG_COLOR, deck.BackgroundColor, true, false, false, GUILayout.ExpandWidth(true));
                 deck.CourseTitle = EditorGUILayout.TextField("Course Title", deck.CourseTitle);
                 deck.SessionTitle = EditorGUILayout.TextField("Session Title", deck.SessionTitle);
+                deck.SessionNumber = EditorGUILayout.IntField("Session Number", deck.SessionNumber);
                 deck.SessionDate = EditorGUILayout.TextField("Session Date", deck.SessionDate);
                 deck.IsWebApp = EditorGUILayout.Toggle("Is Web App", deck.IsWebApp);
 

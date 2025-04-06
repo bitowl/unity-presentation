@@ -101,6 +101,15 @@ namespace Unity.Presentation
         }
 
         /// <summary>
+        /// Number of the session
+        /// </summary>
+        public int SessionNumber
+        {
+            get { return sessionNumber; }
+            set { sessionNumber = value; }
+        }
+
+        /// <summary>
         /// Date of the session
         /// </summary>
         public string SessionDate
@@ -172,6 +181,9 @@ namespace Unity.Presentation
 
         [SerializeField]
         private string sessionTitle;
+
+        [SerializeField]
+        private int sessionNumber;
 
         [SerializeField]
         private string sessionDate;

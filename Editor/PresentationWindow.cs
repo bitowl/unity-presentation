@@ -108,7 +108,7 @@ namespace Unity.Presentation
 
         public static Action<SlideDeck> onStartExport;
         public static Action<int, bool> onExportSlide;
-        public static Action onFinishExport;
+        public static Action<SlideDeck> onFinishExport;
 
         #region Unity callbacks
 
@@ -286,7 +286,7 @@ namespace Unity.Presentation
                             UnityEngine.Object.DestroyImmediate(exportTexture);
                         }
 
-                        onFinishExport?.Invoke();
+                        onFinishExport?.Invoke(deck);
                         RenderTexture.ReleaseTemporary(renderTexture);
 
                         if (!string.IsNullOrEmpty(activeScene))
