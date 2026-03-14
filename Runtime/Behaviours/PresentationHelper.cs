@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System;
 using UnityEngine.SceneManagement;
-
+using UnityEngine.InputSystem;
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -99,16 +99,56 @@ namespace Unity.Presentation.Behaviors
         {
             if (Frame != null) Frame(this, EventArgs.Empty);
 
-            keyHandled = false;
-        }
+            // Key presses
+            if (Keyboard.current.leftArrowKey.wasPressedThisFrame && Previous != null)
+            {
+                Previous(this, EventArgs.Empty);
+            }
+            else if (Keyboard.current.rightArrowKey.wasPressedThisFrame && Next != null)
+            {
+                Next(this, EventArgs.Empty);
+            }
+#if UNITY_EDITOR
+            else if (Keyboard.current.spaceKey.wasPressedThisFrame && Keyboard.current.shiftKey.isPressed)
+            {
+                if (Application.isPlaying)
+                {
+                    if (gameView.IsMaximized || gameView.IsFullscreen)
+                        gameView.SetNormal();
+                    else
+                    {
+                        if (Event.current.control || Event.current.command)
+                            gameView.SetFullscreen();
+                        else
+                            gameView.SetMaximized();
+                    }
+                }
+                else
+                {
+                    if (gameView.IsFullscreen)
+                        gameView.SetNormal();
+                    else if (Event.current.control || Event.current.command)
+                        gameView.SetFullscreen();
+                }
+            }
+#endif
+            else if (Keyboard.current.escapeKey.wasPressedThisFrame)
+            {
+                showBreakMenu = !showBreakMenu;
+            }
+            else if (Keyboard.current.qKey.wasPressedThisFrame)
+            {
+                showSlidesMenu = !showSlidesMenu;
+            }
+            else if (Keyboard.current.cKey.wasPressedThisFrame)
+            {
 
-        // Getting double EventType.KeyUp events in Standalone Player.
-        // This hack is here to make sure that we handle it only once.
-        private bool keyHandled = false;
+                showCursorCircle = !showCursorCircle;
+            }
+        }
 
         private void OnGUI()
         {
-
             if (showSlidesMenu && GoToSlide != null)
             {
                 for (int i = 0; i < slideNames.Length; i++)
@@ -123,7 +163,8 @@ namespace Unity.Presentation.Behaviors
 
             if (showCursorCircle)
             {
-                GUI.DrawTexture(new Rect(Input.mousePosition.x - 32, Screen.height - Input.mousePosition.y - 32, 64, 64), cursorTexture);
+                var mousePosition = Mouse.current.position.ReadValue();
+                GUI.DrawTexture(new Rect(mousePosition.x - 32, Screen.height - mousePosition.y - 32, 64, 64), cursorTexture);
             }
 
             if (showBreakMenu)
@@ -156,59 +197,6 @@ namespace Unity.Presentation.Behaviors
                 }
 
 
-            }
-
-            // Key presses
-
-            if (Event.current.type == EventType.KeyUp && !keyHandled)
-            {
-                keyHandled = true;
-                if (Event.current.keyCode == PreviousSlide && Previous != null)
-                {
-                    Event.current.Use();
-                    Previous(this, EventArgs.Empty);
-                }
-                else if (Event.current.keyCode == NextSlide && Next != null)
-                {
-                    Event.current.Use();
-                    Next(this, EventArgs.Empty);
-                }
-                else if (Event.current.keyCode == KeyCode.Space && Event.current.shift)
-                {
-#if UNITY_EDITOR
-                    if (Application.isPlaying)
-                    {
-                        if (gameView.IsMaximized || gameView.IsFullscreen)
-                            gameView.SetNormal();
-                        else
-                        {
-                            if (Event.current.control || Event.current.command)
-                                gameView.SetFullscreen();
-                            else
-                                gameView.SetMaximized();
-                        }
-                    }
-                    else
-                    {
-                        if (gameView.IsFullscreen)
-                            gameView.SetNormal();
-                        else if (Event.current.control || Event.current.command)
-                            gameView.SetFullscreen();
-                    }
-#endif
-                }
-                else if (Event.current.keyCode == KeyCode.Escape)
-                {
-                    showBreakMenu = !showBreakMenu;
-                }
-                else if (Event.current.keyCode == KeyCode.Q)
-                {
-                    showSlidesMenu = !showSlidesMenu;
-                }
-                else if (Event.current.keyCode == KeyCode.C)
-                {
-                    showCursorCircle = !showCursorCircle;
-                }
             }
         }
 
