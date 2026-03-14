@@ -242,7 +242,7 @@ namespace Unity.Presentation.Inspectors
         [OnOpenAsset(1)]
         public static bool step1(int instanceID, int line)
         {
-            SlideDeck deck = EditorUtility.InstanceIDToObject(instanceID) as SlideDeck;
+            SlideDeck deck = EditorUtility.EntityIdToObject(instanceID) as SlideDeck;
 
             if (deck)
             {
